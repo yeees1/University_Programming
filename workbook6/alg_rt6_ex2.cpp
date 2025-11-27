@@ -35,3 +35,4 @@ int main() {
     for (auto pair : hashTable) cout << pair.first << ": " << pair.second << endl;
     return 0;
 }
+//бобрушка 

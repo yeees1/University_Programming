@@ -3,3 +3,4 @@
 *.[!a-zA-Z]*
 .vscode/
 **/build/
+forgit.txt
