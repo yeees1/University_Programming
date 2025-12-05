@@ -15,13 +15,11 @@ using namespace std;
 vector<int> formHashTable(unordered_map<int, int>& hashTable, vector<int>& inputNumbers, int target) {
     int sub;
     for (auto i = 0; i < inputNumbers.size(); i++) {
-        if (inputNumbers[i] <= target) {
             sub = target - inputNumbers[i];
             if (hashTable.count(sub) > 0) {
                 return {hashTable[sub], i};
             }
             hashTable[inputNumbers[i]] = i;
-        }
 
     }
     return {-1, -1};
