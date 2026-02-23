@@ -45,7 +45,7 @@ pair <Node*, Node*> splitList(Node* head, int target) {
             }
             more = current;
         } else {
-            if (more == nullptr) {
+            if (less == nullptr) {
                 headLess = current;
             } else {
                 less->next = current;
@@ -54,7 +54,7 @@ pair <Node*, Node*> splitList(Node* head, int target) {
         }
         current = tempLink;
     }
-    return {headMore, headLess};
+    return {headLess, headMore};
 }
 
 void printList(Node* head) {
@@ -74,6 +74,7 @@ void printList(Node* head) {
 int main() {
     int target, n, tempElement;
     cin >> n >> target;
+    if (n < 2) {cout << "n must be >=2"<< endl; return 0;}
     vector<int> values;
     for (int i = 0; i < n; i++) {
         cin >> tempElement;

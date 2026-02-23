@@ -59,6 +59,19 @@ void printList(Node* head) {
     cout << "head" << endl;
 }
 
+void clearList(Node*& head) {
+    if (head == nullptr) return;
+    Node* current = head->next;
+    Node* tempLink = nullptr;
+    while (current != head) {
+        tempLink = current;
+        current = current->next;
+        delete tempLink;
+    }
+    delete head;
+    head = nullptr;
+}
+
 int main() {
     Node* head = nullptr;
     addElement(2, head);
@@ -73,6 +86,13 @@ int main() {
     deleteElement(head, 10);
     printList(head);
     deleteElement(head, 90);
+    printList(head);
+    addElement(2, head);
+    addElement(10, head);
+    addElement(30, head);
+    addElement(90, head);
+    printList(head);
+    clearList(head);
     printList(head);
     return 0;
 }
