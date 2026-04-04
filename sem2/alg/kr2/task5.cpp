@@ -72,6 +72,19 @@ int evenCount(Node* root, int l, int r) {
     return evenCount(root->left, l, r) + evenCount(root->right, l, r);
 }
 
+int countContains(Node* root, int x) {
+    if (root == nullptr) return 0;
+    int count = (root->l <= x && x <= root->r) ? 1 : 0;
+    return count + countContains(root->left, x) + countContains(root->right, x);
+}
+
+void deleteTree(Node* root) {
+    if (root == nullptr) return;
+    deleteTree(root->left);
+    deleteTree(root->right);
+    delete root;
+}
+
 void printTree(Node* node, int depth = 0) {
     if (!node) return;
     for (int i = 0; i < depth; i++) cout << "  ";
@@ -101,6 +114,10 @@ int main() {
     cout << "odd [" << a << "," << b << "] = " << oddCount(root, a, b) << endl;
     cout << "even [" << a << "," << b << "] = " << evenCount(root, a, b) << endl;
 
+    int x;
+    cin >> x;
+    cout << countContains(root, x)<< endl;
 
+    deleteTree(root);
     return 0;
 }
