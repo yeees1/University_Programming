@@ -16,7 +16,30 @@ class Buffer {
             copy(list.begin(), list.end(), data);
         }
 
-        Buffer(Buffer& other) : size(other.size) {}
+        Buffer(Buffer& other) : Buffer(other.size) {
+            copy(other.data, other.data + other.size, data);
+        }
+
+        Buffer(Buffer&& other) : data(other.data), size(other.size) {
+            other.data = nullptr;
+            other.size = 0;
+        }
+
+        void print() const {
+            for (size_t i = 0; i < size; i++) {
+                cout << data[i] << " ";
+            }
+            cout << endl;
+        }
+
+        void resize(size_t newSize) {
+            int* tempData = new int[newSize];
+            copy(data, data + min(size, newSize), tempData);
+            delete[] data;
+            data = tempData;
+            size = newSize;
+        }
+
 
         ~Buffer() { delete[] data; }
 };

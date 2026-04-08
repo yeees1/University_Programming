@@ -22,6 +22,7 @@ class Node {
             }
         }
 
+
         Node(Node&& other) noexcept : value(other.value), next(move(other.next)) {}
 
         ~Node() {
