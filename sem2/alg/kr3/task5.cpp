@@ -148,6 +148,7 @@ void inorder(TreeNode* root) {
 
 int main() {
     TreeNode* root = nullptr;
+
     int arr[] = {7, 3, 18, 10, 22, 8, 11, 26};
     for (int v : arr) insertNode(root, v);
 
