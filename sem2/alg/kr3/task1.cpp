@@ -28,7 +28,7 @@ Node* constructTree(Node* root, int data) {
 
 void getBalanceTree(Node* root) {
     if (root == nullptr) return;
-    int tempBalance = abs(heightTree(root->left) - heightTree(root->right));
+    int tempBalance = heightTree(root->left) - heightTree(root->right);
     root->balance = tempBalance < 2 ? tempBalance : -1;
     getBalanceTree(root->left);
     getBalanceTree(root->right);
@@ -49,7 +49,7 @@ int main() {
     Node* root = constructTree(nullptr, tempEl);
     cout << tempEl << endl;
     for (int i = 1; i < 10; i++) {
-        tempEl = rand() % 100;
+        tempEl = rand() % 100 + 1;
         cout << tempEl << endl;
         root = constructTree(root, tempEl);
     }
