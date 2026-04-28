@@ -38,6 +38,18 @@ TreeNode* uncle(TreeNode* node) {
     else return temp->left;
 }
 
+TreeNode* searchMinNode(TreeNode* node) {
+    while (node && node->left) node = node->left;
+    return node;
+}
+
+void transplantNode(TreeNode*& root, TreeNode* node, TreeNode* newNode) {
+    if (!node->parent) root = newNode;
+    else if (node->parent->left == node) node->parent->left = newNode;
+    else node->parent->right = newNode;
+    if (newNode) newNode->parent = node->parent;
+}
+
 //povoroti
 
 void rotateLeft(TreeNode*& root, TreeNode* node) {
@@ -109,6 +121,59 @@ void fixInsert(TreeNode*& root, TreeNode* node) {
     root->color = BLACK;
 }
 
+void fixErase(TreeNode*& root, TreeNode* node) {
+    while (node != root && isBlack(node)) {
+        if (node == node->parent->left) {
+            TreeNode* bro = node->parent->right;
+            if (isRed(bro)) {
+                bro->color = BLACK;
+                bro->parent->color = RED;
+                rotateLeft(root, node->parent);
+                bro = node->parent->right;
+            } else if (isBlack(bro->right) && isBlack(bro->left)) {
+                bro->color = RED;
+                node = node->parent;
+            } else if (isRed(bro->left) && isBlack(bro->right)) {
+                bro->color = RED;
+                bro->left->color = BLACK;
+                rotateRight(root, bro);
+                bro = node->parent->right;
+            } else if (isRed(bro->right)) {
+                bro->color = node->parent->color;
+                node->parent->color = BLACK;
+                bro->right->color = BLACK;
+                rotateLeft(root, node->parent);
+                node = root;
+            }
+        } else {
+            TreeNode* bro = node->parent->left;
+            if (isRed(bro)) {
+                bro->color = BLACK;
+                bro->parent->color = RED;
+                rotateRight(root, bro->parent);
+                bro = node->parent->left;
+            }
+            if (isBlack(bro->left) && isBlack(bro->right)) {
+                bro->color = RED;
+                node = node->parent;
+            } else {
+                if (isBlack(bro->left)) {
+                    if (bro->right) bro->right->color = BLACK;
+                    bro->color = RED;
+                    rotateLeft(root, bro);
+                    bro = node->parent->left;
+                }
+                bro->color = node->parent->color;
+                node->parent->color = BLACK;
+                if (bro->left) bro->left->color = BLACK;
+                rotateRight(root, node->parent);
+                node = root;
+            }
+        }
+    }
+    if (node) node->color = BLACK;
+}
+
 //vstavka i udalenie
 
 void insertNode(TreeNode*& root, int target) {
@@ -137,6 +202,50 @@ void insertNode(TreeNode*& root, int target) {
     fixInsert(root, temp);
 }
 
+void deleteNode(TreeNode*& root, int target) {
+    TreeNode* current = root;
+    while (current) {
+        if (target < current->data) current = current->left;
+        else if (target > current->data) current = current->right;
+        else break;
+    }
+    if (!current) return; // нет такого ключа
+
+    TreeNode* node = current;
+    TreeNode* temp = nullptr;
+    Color nodeOriginalColor = node->color;
+
+    if (!current->left) {
+        temp = current->right;
+        transplantNode(root, current, current->right);
+    }
+    else if (!current->right) {
+        temp = current->left;
+        transplantNode(root, current, current->left);
+    }
+    else {
+        node = searchMinNode(current->right);
+        nodeOriginalColor = node->color;
+        temp = node->right;
+        if (node->parent == current) {
+            if (temp) temp->parent = node;
+        } else {
+            transplantNode(root, node, node->right);
+            node->right = current->right;
+            node->right->parent = node;
+        }
+        transplantNode(root, current, node);
+        node->left = current->left;
+        node->left->parent = node;
+        node->color = current->color;
+    }
+    delete current;
+
+    // Если удалённый узел был чёрным — балансировка
+    if (nodeOriginalColor == BLACK)
+        fixErase(root, temp);
+}
+
 //vivod
 
 void inorder(TreeNode* root) {
@@ -153,5 +262,9 @@ int main() {
     for (int v : arr) insertNode(root, v);
 
     cout << "Inorder: "; inorder(root); cout << endl;
+
+    deleteNode(root, 18);
+    cout << "После удаления 18: "; inorder(root); cout << endl;
+
     return 0;
 }
